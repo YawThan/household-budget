@@ -2,7 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getFirestore, doc, setDoc, updateDoc, arrayUnion, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // =========================================================================
-// 1. FIREBASE INITIALIZATION (PASTE YOUR ACTUAL CONFIG VALUES HERE)
+// 1. FIREBASE SETUP (PASTE YOUR ACTUAL APP CREDENTIALS HERE)
 // =========================================================================
 const firebaseConfig = {
     apiKey: "AIzaSyAU3Y4bIzWiGDUn4s0_efGebCahZQBmKv8",
@@ -15,129 +15,156 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
-// Pinpointing a static document reference for your shared household balance pool
 const budgetDocRef = doc(db, "budgets", "shared_pool");
 
 // =========================================================================
-// 2. IN-MEMORY APPLICATION STATE
+// 2. STATE MANAGER VARIABLES
 // =========================================================================
-let totalBudget = 0;
-let remainingBudget = 0;
-let expenses = [];
+let balances = {
+    ZKL_Kpay: 0,
+    ZKL_Cash: 0,
+    HYW_Kpay: 0,
+    HYW_Cash: 0
+};
+let transactions = [];
 
 // =========================================================================
 // 3. UI ELEMENT SELECTORS
 // =========================================================================
-const budgetInput = document.getElementById('budget-input');
-const setBudgetBtn = document.getElementById('set-budget-btn');
-const remainingDisplay = document.getElementById('remaining-display');
-const totalDisplay = document.getElementById('total-display');
+const totalCombinedDisplay = document.getElementById('total-combined-display');
+const zklKpayDisplay = document.getElementById('zkl-kpay-display');
+const zklCashDisplay = document.getElementById('zkl-cash-display');
+const hywKpayDisplay = document.getElementById('hyw-kpay-display');
+const hywCashDisplay = document.getElementById('hyw-cash-display');
 const balanceContainer = document.getElementById('balance-container');
 
-const expenseUserInput = document.getElementById('expense-user');
-const expenseNameInput = document.getElementById('expense-name');
-const expenseAmountInput = document.getElementById('expense-amount');
+// Income Inputs
+const incomeWallet = document.getElementById('income-wallet');
+const incomeName = document.getElementById('income-name');
+const incomeAmount = document.getElementById('income-amount');
+const addIncomeBtn = document.getElementById('add-income-btn');
+
+// Expense Inputs
+const expenseWallet = document.getElementById('expense-wallet');
+const expenseName = document.getElementById('expense-name');
+const expenseAmount = document.getElementById('expense-amount');
 const addExpenseBtn = document.getElementById('add-expense-btn');
+
 const historyList = document.getElementById('history-list');
 
 // =========================================================================
-// 4. REAL-TIME CLOUD SYNCHRONIZER
+// 4. REAL-TIME DATABASE SYNC LISTENER
 // =========================================================================
 onSnapshot(budgetDocRef, (docSnap) => {
     if (docSnap.exists()) {
         const data = docSnap.data();
-        totalBudget = data.totalBudget || 0;
-        remainingBudget = data.remainingBudget || 0;
-        expenses = data.expenses || [];
+        balances = data.balances || { ZKL_Kpay: 0, ZKL_Cash: 0, HYW_Kpay: 0, HYW_Cash: 0 };
+        transactions = data.transactions || [];
     } else {
-        totalBudget = 0;
-        remainingBudget = 0;
-        expenses = [];
+        // Run structure initialization if completely blank cloud footprint is detected
+        balances = { ZKL_Kpay: 0, ZKL_Cash: 0, HYW_Kpay: 0, HYW_Cash: 0 };
+        transactions = [];
     }
     updateUI();
 });
 
 // =========================================================================
-// 5. EVENT ACTIONS (Pushes mutations directly to the Cloud)
+// 5. TRANSACTION MUTATION HANDLERS
 // =========================================================================
-async function handleSetBudget() {
-    const inputVal = parseFloat(budgetInput.value);
 
-    if (isNaN(inputVal) || inputVal <= 0) {
-        alert("Please enter a valid budget amount greater than 0.");
-        return;
+async function handleTransaction(type, walletKey, nameStr, amountNum) {
+    const updatedBalances = { ...balances };
+
+    if (type === 'income') {
+        updatedBalances[walletKey] += amountNum;
+    } else if (type === 'expense') {
+        updatedBalances[walletKey] -= amountNum;
     }
 
     try {
         await setDoc(budgetDocRef, {
-            totalBudget: inputVal,
-            remainingBudget: inputVal,
-            expenses: []
-        });
-        budgetInput.value = "";
+            balances: updatedBalances,
+            transactions: arrayUnion({
+                id: Date.now(),
+                type: type,
+                wallet: walletKey,
+                name: nameStr,
+                amount: amountNum
+            })
+        }, { merge: true });
     } catch (err) {
-        console.error("Database connection failed:", err);
+        console.error("Cloud mutation transaction failed:", err);
+        alert("Failed to synchronize with database.");
     }
 }
 
-async function handleAddExpense() {
-    const user = expenseUserInput.value;
-    const name = expenseNameInput.value.trim();
-    const amount = parseFloat(expenseAmountInput.value);
+addIncomeBtn.addEventListener('click', async () => {
+    const wallet = incomeWallet.value;
+    const name = incomeName.value.trim();
+    const amount = parseFloat(incomeAmount.value);
 
     if (name === "" || isNaN(amount) || amount <= 0) {
-        alert("Please provide a valid descriptive name and numerical cost.");
+        alert("Please provide valid data input details.");
         return;
     }
 
-    try {
-        await updateDoc(budgetDocRef, {
-            remainingBudget: remainingBudget - amount,
-            expenses: arrayUnion({
-                id: Date.now(),
-                user: user,
-                name: name,
-                amount: amount
-            })
-        });
-        expenseNameInput.value = "";
-        expenseAmountInput.value = "";
-    } catch (err) {
-        console.error("Failed to commit write operation:", err);
+    await handleTransaction('income', wallet, name, amount);
+    incomeName.value = "";
+    incomeAmount.value = "";
+});
+
+addExpenseBtn.addEventListener('click', async () => {
+    const wallet = expenseWallet.value;
+    const name = expenseName.value.trim();
+    const amount = parseFloat(expenseAmount.value);
+
+    if (name === "" || isNaN(amount) || amount <= 0) {
+        alert("Please provide valid data input details.");
+        return;
     }
-}
+
+    await handleTransaction('expense', wallet, name, amount);
+    expenseName.value = "";
+    expenseAmount.value = "";
+});
 
 // =========================================================================
-// 6. RENDER INTERFACE
+// 6. RENDER INTERFACE UI
 // =========================================================================
 function updateUI() {
-    remainingDisplay.textContent = remainingBudget.toFixed(2);
-    totalDisplay.textContent = totalBudget.toFixed(2);
+    // Write individual sub-wallets
+    zklKpayDisplay.textContent = balances.ZKL_Kpay.toFixed(2);
+    zklCashDisplay.textContent = balances.ZKL_Cash.toFixed(2);
+    hywKpayDisplay.textContent = balances.HYW_Kpay.toFixed(2);
+    hywCashDisplay.textContent = balances.HYW_Cash.toFixed(2);
 
-    balanceContainer.className = "balance"; 
-    if (remainingBudget > 0) {
-        balanceContainer.classList.add("positive");
-    } else if (remainingBudget < 0) {
-        balanceContainer.classList.add("negative");
-    } else {
-        balanceContainer.classList.add("neutral");
-    }
+    // Compute and display cumulative master total status
+    const combinedTotal = balances.ZKL_Kpay + balances.ZKL_Cash + balances.HYW_Kpay + balances.HYW_Cash;
+    totalCombinedDisplay.textContent = combinedTotal.toFixed(2);
 
-    historyList.innerHTML = ""; 
-    for (let i = expenses.length - 1; i >= 0; i--) {
-        const item = expenses[i];
+    balanceContainer.className = "balance";
+    if (combinedTotal > 0) balanceContainer.classList.add("positive");
+    else if (combinedTotal < 0) balanceContainer.classList.add("negative");
+    else balanceContainer.classList.add("neutral");
+
+    // Populate log entries mapping newest activities first
+    historyList.innerHTML = "";
+    for (let i = transactions.length - 1; i >= 0; i--) {
+        const item = transactions[i];
         const li = document.createElement('li');
+        
+        const displayWalletName = item.wallet.replace('_', ' '); 
+        const isIncome = item.type === 'income';
+        
         li.innerHTML = `
-            <div class="expense-info">
-                <span class="badge">${item.user}</span>
-                <span class="expense-item-name">${item.name}</span>
+            <div class="tx-info">
+                <span class="badge badge-${item.wallet.toLowerCase()}">${displayWalletName}</span>
+                <span>${item.name}</span>
             </div>
-            <span class="expense-amount">-$${item.amount.toFixed(2)}</span>
+            <span class="${isIncome ? 'amt-income' : 'amt-expense'}">
+                ${isIncome ? '+' : '-'}$${item.amount.toFixed(2)}
+            </span>
         `;
         historyList.appendChild(li);
     }
 }
-
-setBudgetBtn.addEventListener('click', handleSetBudget);
-addExpenseBtn.addEventListener('click', handleAddExpense);
