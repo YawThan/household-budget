@@ -40,7 +40,6 @@ h1 {
 
 h2 {
     font-size: 1.1rem;
-    margin-bottom: 15px;
     border-left: 4px solid var(--primary);
     padding-left: 8px;
 }
@@ -67,7 +66,6 @@ h2 {
 .positive { color: var(--success); }
 .negative { color: var(--danger); }
 
-/* Grid Layout for Individual Wallets */
 .wallet-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -141,6 +139,25 @@ button {
 .btn-danger { background-color: var(--danger); }
 .btn-danger:hover { background-color: var(--danger-hover); }
 
+/* History Utility Design */
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.btn-clear {
+    background: #9ca3af;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    border-radius: 4px;
+}
+
+.btn-clear:hover {
+    background: #6b7280;
+}
+
 ul { list-style: none; }
 
 li {
@@ -173,5 +190,25 @@ li:last-child { border-bottom: none; }
     align-items: center;
 }
 
+.tx-right-side {
+    display: flex;
+    align-items: center;
+}
+
 .amt-income { font-weight: bold; color: var(--success); }
 .amt-expense { font-weight: bold; color: var(--danger); }
+
+.delete-tx-btn {
+    background: transparent;
+    color: #9ca3af;
+    border: none;
+    font-size: 1.3rem;
+    cursor: pointer;
+    padding: 0 0 0 12px;
+    font-weight: normal;
+    transition: color 0.2s;
+}
+
+.delete-tx-btn:hover {
+    color: var(--danger);
+}
