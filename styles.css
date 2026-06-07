@@ -3,9 +3,10 @@
     --card-bg: #ffffff;
     --text-main: #333333;
     --primary: #4f46e5;
-    --primary-hover: #4338ca;
     --success: #10b981;
+    --success-hover: #059669;
     --danger: #ef4444;
+    --danger-hover: #dc2626;
     --border: #e5e7eb;
 }
 
@@ -40,49 +41,16 @@ h1 {
 h2 {
     font-size: 1.1rem;
     margin-bottom: 15px;
+    border-left: 4px solid var(--primary);
+    padding-left: 8px;
 }
 
 .card {
     background: var(--card-bg);
     padding: 20px;
     border-radius: 12px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     margin-bottom: 20px;
-}
-
-.input-group {
-    display: flex;
-    gap: 10px;
-}
-
-input, select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    font-size: 1rem;
-    background: #fff;
-}
-
-button {
-    background-color: var(--primary);
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 6px;
-    font-weight: bold;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: background 0.2s;
-}
-
-button:hover {
-    background-color: var(--primary-hover);
-}
-
-.btn-block {
-    width: 100%;
-    margin-top: 10px;
 }
 
 .dashboard {
@@ -92,17 +60,42 @@ button:hover {
 .balance {
     font-size: 2.5rem;
     font-weight: bold;
-    margin: 10px 0;
-    transition: color 0.3s;
+    margin: 10px 0 20px 0;
 }
 
 .neutral { color: var(--text-main); }
 .positive { color: var(--success); }
 .negative { color: var(--danger); }
 
-.budget-summary {
-    font-size: 0.9rem;
+/* Grid Layout for Individual Wallets */
+.wallet-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.wallet-item {
+    background: #f9fafb;
+    border: 1px solid var(--border);
+    padding: 10px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.wallet-label {
+    font-size: 0.8rem;
     color: #666;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.wallet-val {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #111827;
 }
 
 .form-container {
@@ -123,46 +116,62 @@ label {
     color: #555;
 }
 
-hr {
-    border: 0;
-    height: 1px;
-    background: var(--border);
-    margin: 20px 0;
+input, select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 1rem;
+    background: #fff;
 }
 
-ul {
-    list-style: none;
+button {
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
 }
+
+.btn-block { width: 100%; }
+.btn-success { background-color: var(--success); }
+.btn-success:hover { background-color: var(--success-hover); }
+.btn-danger { background-color: var(--danger); }
+.btn-danger:hover { background-color: var(--danger-hover); }
+
+ul { list-style: none; }
 
 li {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px;
+    padding: 12px 0;
     border-bottom: 1px solid var(--border);
     font-size: 0.95rem;
 }
 
-li:last-child {
-    border-bottom: none;
-}
+li:last-child { border-bottom: none; }
 
 .badge {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     padding: 2px 6px;
     border-radius: 4px;
-    background: #e0e7ff;
-    color: var(--primary);
     font-weight: bold;
     margin-right: 8px;
+    text-transform: uppercase;
 }
 
-.expense-info {
+.badge-zkl_kpay { background: #e0e7ff; color: #4f46e5; }
+.badge-zkl_cash { background: #fef3c7; color: #d97706; }
+.badge-hyw_kpay { background: #fae8ff; color: #c084fc; }
+.badge-hyw_cash { background: #ccfbf1; color: #0d9488; }
+
+.tx-info {
     display: flex;
     align-items: center;
 }
 
-.expense-amount {
-    font-weight: bold;
-    color: var(--danger);
-}
+.amt-income { font-weight: bold; color: var(--success); }
+.amt-expense { font-weight: bold; color: var(--danger); }
