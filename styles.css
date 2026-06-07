@@ -1,0 +1,168 @@
+:root {
+    --bg-color: #f4f6f9;
+    --card-bg: #ffffff;
+    --text-main: #333333;
+    --primary: #4f46e5;
+    --primary-hover: #4338ca;
+    --success: #10b981;
+    --danger: #ef4444;
+    --border: #e5e7eb;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    padding: 20px 10px;
+}
+
+.container {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-size: 1.5rem;
+    color: var(--primary);
+}
+
+h2 {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+}
+
+.card {
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.input-group {
+    display: flex;
+    gap: 10px;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 1rem;
+    background: #fff;
+}
+
+button {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s;
+}
+
+button:hover {
+    background-color: var(--primary-hover);
+}
+
+.btn-block {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.dashboard {
+    text-align: center;
+}
+
+.balance {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin: 10px 0;
+    transition: color 0.3s;
+}
+
+.neutral { color: var(--text-main); }
+.positive { color: var(--success); }
+.negative { color: var(--danger); }
+
+.budget-summary {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.input-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #555;
+}
+
+hr {
+    border: 0;
+    height: 1px;
+    background: var(--border);
+    margin: 20px 0;
+}
+
+ul {
+    list-style: none;
+}
+
+li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.95rem;
+}
+
+li:last-child {
+    border-bottom: none;
+}
+
+.badge {
+    font-size: 0.75rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: #e0e7ff;
+    color: var(--primary);
+    font-weight: bold;
+    margin-right: 8px;
+}
+
+.expense-info {
+    display: flex;
+    align-items: center;
+}
+
+.expense-amount {
+    font-weight: bold;
+    color: var(--danger);
+}
