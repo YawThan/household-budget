@@ -3,60 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shared Budget Tracker</title>
+    <title>Shared Multi-Wallet Budget</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <main class="container">
         <header>
-            <h1>Household Budget Tracker</h1>
+            <h1>Household Wallet Tracker</h1>
         </header>
 
-        <section class="card" id="setup-zone">
-            <h2>Set Monthly Budget</h2>
-            <div class="input-group">
-                <input type="number" id="budget-input" placeholder="Enter total budget (e.g., 1000)" min="1">
-                <button id="set-budget-btn">Set Budget</button>
-            </div>
-        </section>
-
-        <section class="card dashboard" id="dashboard-zone">
-            <h2>Remaining Balance</h2>
+        <section class="card dashboard">
+            <h2>Total Combined Money</h2>
             <div id="balance-container" class="balance neutral">
-                $<span id="remaining-display">0.00</span>
+                <span id="total-combined-display">0.00</span>
             </div>
-            <div class="budget-summary">
-                Initial Budget: $<span id="total-display">0.00</span>
+            
+            <div class="wallet-grid">
+                <div class="wallet-item">
+                    <span class="wallet-label">ZKL Kpay</span>
+                    <span id="zkl-kpay-display" class="wallet-val">0.00</span>
+                </div>
+                <div class="wallet-item">
+                    <span class="wallet-label">ZKL Cash</span>
+                    <span id="zkl-cash-display" class="wallet-val">0.00</span>
+                </div>
+                <div class="wallet-item">
+                    <span class="wallet-label">HYW Kpay</span>
+                    <span id="hyw-kpay-display" class="wallet-val">0.00</span>
+                </div>
+                <div class="wallet-item">
+                    <span class="wallet-label">HYW Cash</span>
+                    <span id="hyw-cash-display" class="wallet-val">0.00</span>
+                </div>
             </div>
         </section>
 
-        <section class="card" id="expense-zone">
+        <section class="card">
+            <h2>Log New Income</h2>
+            <div class="form-container">
+                <div class="input-field">
+                    <label for="income-wallet">Deposit To:</label>
+                    <select id="income-wallet">
+                        <option value="ZKL_Kpay">ZKL - Kpay</option>
+                        <option value="ZKL_Cash">ZKL - Cash</option>
+                        <option value="HYW_Kpay">HYW - Kpay</option>
+                        <option value="HYW_Cash">HYW - Cash</option>
+                    </select>
+                </div>
+                <div class="input-field">
+                    <label for="income-name">Source / Reference:</label>
+                    <input type="text" id="income-name" placeholder="e.g., Salary, Cashback, Freelance">
+                </div>
+                <div class="input-field">
+                    <label for="income-amount">Amount:</label>
+                    <input type="number" id="income-amount" placeholder="0.00" min="0.01" step="0.01">
+                </div>
+                <button id="add-income-btn" class="btn-block btn-success">Add Income</button>
+            </div>
+        </section>
+
+        <section class="card">
             <h2>Log New Expense</h2>
             <div class="form-container">
                 <div class="input-field">
-                    <label for="expense-user">Spent By:</label>
-                    <select id="expense-user">
-                        <option value="Me">Me</option>
-                        <option value="Partner">Partner</option>
+                    <label for="expense-wallet">Spent From:</label>
+                    <select id="expense-wallet">
+                        <option value="ZKL_Kpay">ZKL - Kpay</option>
+                        <option value="ZKL_Cash">ZKL - Cash</option>
+                        <option value="HYW_Kpay">HYW - Kpay</option>
+                        <option value="HYW_Cash">HYW - Cash</option>
                     </select>
                 </div>
-
                 <div class="input-field">
-                    <label for="expense-name">Item Name:</label>
-                    <input type="text" id="expense-name" placeholder="e.g., Groceries, Dinner">
+                    <label for="expense-name">Item Name / Purpose:</label>
+                    <input type="text" id="expense-name" placeholder="e.g., Groceries, Taxi, Dinner">
                 </div>
-
                 <div class="input-field">
-                    <label for="expense-amount">Amount ($):</label>
+                    <label for="expense-amount">Amount:</label>
                     <input type="number" id="expense-amount" placeholder="0.00" min="0.01" step="0.01">
                 </div>
-
-                <button id="add-expense-btn" class="btn-block">Add Expense</button>
+                <button id="add-expense-btn" class="btn-block btn-danger">Add Expense</button>
             </div>
+        </section>
 
-            <hr>
-
-            <h2>Expense History</h2>
+        <section class="card">
+            <h2>Transaction History</h2>
             <ul id="history-list">
                 </ul>
         </section>
