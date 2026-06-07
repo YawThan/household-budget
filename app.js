@@ -5,12 +5,13 @@ import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/f
 // 1. FIREBASE SETUP (PASTE YOUR ACTUAL APP CREDENTIALS HERE)
 // =========================================================================
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_AUTH_DOMAIN",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_STORAGE_BUCKET",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyAU3Y4bIzWiGDUn4s0_efGebCahZQBmKv8",
+  authDomain: "householdbudget-28f60.firebaseapp.com",
+  databaseURL: "https://householdbudget-28f60-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "householdbudget-28f60",
+  storageBucket: "householdbudget-28f60.firebasestorage.app",
+  messagingSenderId: "155314867342",
+  appId: "1:155314867342:web:5dac3c253a2e3d39458ddf"
 };
 
 const app = initializeApp(firebaseConfig);
